@@ -1,0 +1,25 @@
+name: Action on Push to generate, validate and push config to Kong; Publish to Dev Portal
+
+on:
+  push:
+    branches: 
+      - master
+jobs:
+  deploy_to_kong:
+    runs-on: self-hosted
+    name: Action on Push to generate, validate and push config to Kong; Publish to Dev Portal
+    steps:        
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Generate Kong declarative configuration from Spec
+      run: |
+        /bin/sh -c 'inso generate config ./specs/orders.yaml --type declarative > /tmp/kong.yaml'
+    - name: Validate Kong declarative configuration
+      run: |
+        /bin/sh -c 'pushd /tmp && deck validate'
+    - name: Deploy declarative config
+      run: |
+        /bin/sh -c 'pushd /tmp && deck sync'
+    - name: Publish Spec to Dev Portal
+      run: |
+        /bin/sh -c 'pushd ./specs && http --check-status --ignore-stdin PUT :8001/default/files/specs/orders.yaml contents=@orders.yaml'

@@ -1,0 +1,6 @@
+.DS_Store
+actions-runner/
+node_modules/
+license
+kong-plugin-mocking
+
