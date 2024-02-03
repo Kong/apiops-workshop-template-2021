@@ -6,6 +6,7 @@ on:
       - master
 jobs:
   deploy_to_kong:
+    timeout-minutes: ${{ fromJSON(vars.GHA_DEFAULT_TIMEOUT) }}
     runs-on: self-hosted
     name: Action on Push to generate, validate and push config to Kong; Publish to Dev Portal
     steps:        
